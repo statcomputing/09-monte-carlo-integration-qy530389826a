@@ -1,0 +1,28 @@
+"0","set.seed(123)"
+"0","n = 5000; r = 0.05; S0 = 1; K=1.5; tgrid = seq(0, 1, length = 12)[-1]"
+"0","re1 = optValueAppr(n, r, sigma = 0.2, S0, K, tgrid)"
+"0","re2 = optValueAppr(n, r, sigma = 0.3, S0, K, tgrid)"
+"0","re3 = optValueAppr(n, r, sigma = 0.4, S0, K, tgrid)"
+"0","re4 = optValueAppr(n, r, sigma = 0.5, S0, K, tgrid)"
+"0","sig1 = cbind(cor(re1$pAri,re1$ST),cor(re1$pAri,re1$pStd),cor(re1$pAri,re1$pGeo))"
+"0","sig2 = cbind(cor(re2$pAri,re2$ST),cor(re2$pAri,re2$pStd),cor(re2$pAri,re2$pGeo))"
+"0","sig3 = cbind(cor(re3$pAri,re3$ST),cor(re3$pAri,re3$pStd),cor(re3$pAri,re3$pGeo))"
+"0","sig4 = cbind(cor(re4$pAri,re4$ST),cor(re4$pAri,re4$pStd),cor(re4$pAri,re4$pGeo))"
+"0","re = data.frame(sigma=c(0.2, 0.3, 0.4, 0.5), rbind(sig1, sig2, sig3, sig4))"
+"0","colnames(re) = c(""sigma"", 'cor(P(A),S(T))','cor(P(A),P(E))','cor(P(A),P(G))')"
+"0","library(pander)"
+"0","pander(re)"
+"1","
+----------------------------------------------------------
+ sigma   cor(P(A),S(T))   cor(P(A),P(E))   cor(P(A),P(G)) 
+------- ---------------- ---------------- ----------------
+  0.2        0.1224           0.4925           0.9972     
+
+  0.3        0.3294           0.6206           0.9905     
+
+  0.4        0.5167           0.7562           0.9913     
+
+  0.5        0.6358           0.8106           0.9899     
+----------------------------------------------------------
+
+"

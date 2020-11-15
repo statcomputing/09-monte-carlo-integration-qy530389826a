@@ -1,0 +1,43 @@
+"0",""
+"0","callValLognorm <- function(S0, K, mu, sigma) {"
+"0","  d <- (log(S0 / K) + mu + sigma^2) / sigma"
+"0","  S0 * exp(mu + 0.5 * sigma^2) * pnorm(d) - K * pnorm(d - sigma)"
+"0","}"
+"0",""
+"0","optValueAppr <- function(n, r = 0.05, sigma = 0.3, S0 = 50, K = 50,"
+"0","                         tgrid = seq(0, .25, length = 14)[-1]) {"
+"0","  nt <- length(tgrid)"
+"0","  TT <- tgrid[nt]"
+"0","  St <- rBM(n, tgrid, sigma, r, S0)"
+"0","  pAri <- pmax(rowMeans(St) - K, 0) * exp(-r * TT)"
+"0","  vAri <- mean(pAri) "
+"0","  ST <- St[, nt]"
+"0","  pStd <- pmax(ST - K, 0) * exp(-r * TT)"
+"0","  pGeo <- pmax(exp(rowMeans(log(St))) - K, 0) * exp(-r * TT)"
+"0","  pAri <- pmax(rowMeans(St) - K, 0)"
+"0","  tbar <- mean(tgrid)"
+"0","  sBar2 <- sigma^2 / nt^2 / tbar * sum( (2 * seq(nt) - 1) * rev(tgrid) )"
+"0","  pGeoTrue <- callValLognorm(S0, K, (r - 0.5 * sigma^2) * tbar,"
+"0","                             sqrt(sBar2 * tbar))"
+"0","  vGeo <- vAri - cov(pGeo, pAri) / var(pGeo) * (mean(pGeo) - pGeoTrue * exp(-r * TT) )"
+"0","  c(vGeo, vAri)"
+"0","}"
+"0",""
+"0","set.seed(123)"
+"0","n = 500"
+"0","sim <- replicate(1000, optValueAppr(n, r = 0.05, sigma = 0.4, S0 = 1, K = 1.5, "
+"0","                                    tgrid = seq(0,1,length = 12)[-1]))"
+"0","re = data.frame(rbind(apply(sim, 1, mean),apply(sim, 1, sd)))"
+"0","rownames(re) <- c('Mean','SD')"
+"0","colnames(re) <- c(""with Control"", ""no Control"")"
+"0","pander(re)"
+"1","
+--------------------------------------
+  &nbsp;    with Control   no Control 
+---------- -------------- ------------
+ **Mean**     0.009051      0.009081  
+
+  **SD**     0.0004016      0.002568  
+--------------------------------------
+
+"

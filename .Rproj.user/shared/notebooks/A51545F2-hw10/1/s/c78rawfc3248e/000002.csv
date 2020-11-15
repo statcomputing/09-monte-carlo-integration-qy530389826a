@@ -1,0 +1,44 @@
+"0",""
+"0","optValueAppr <- function(n, r, sigma, S0, K, tgrid) {"
+"0","  nt <- length(tgrid)"
+"0","  TT <- tgrid[nt]"
+"0","  St <- rBM(n, tgrid, sigma, r, S0)"
+"0","  pAri <- pmax(rowMeans(St) - K, 0) * exp(-r * TT)"
+"0","  ST <- St[, nt]"
+"0","  pStd <- pmax(ST - K, 0) * exp(-r * TT)"
+"0","  pGeo <- pmax(exp(rowMeans(log(St))) - K, 0) * exp(-r * TT)"
+"0","  list(pAri = pAri, ST = ST, pStd = pStd, pGeo = pGeo )"
+"0","}"
+"0",""
+"0","set.seed(123)"
+"0","n = 5000; r = 0.05; sigma = 0.5; S0 = 1; tgrid = seq(0, 1, length = 12)[-1]"
+"0","re1 = optValueAppr(n, r, sigma, S0, K = 1.1, tgrid)"
+"0","re2 = optValueAppr(n, r, sigma, S0, K = 1.2, tgrid)"
+"0","re3 = optValueAppr(n, r, sigma, S0, K = 1.3, tgrid)"
+"0","re4 = optValueAppr(n, r, sigma, S0, K = 1.4, tgrid)"
+"0","re5 = optValueAppr(n, r, sigma, S0, K = 1.5, tgrid)"
+"0","k1 = cbind(cor(re1$pAri,re1$ST),cor(re1$pAri,re1$pStd),cor(re1$pAri,re1$pGeo))"
+"0","k2 = cbind(cor(re2$pAri,re2$ST),cor(re2$pAri,re2$pStd),cor(re2$pAri,re2$pGeo))"
+"0","k3 = cbind(cor(re3$pAri,re3$ST),cor(re3$pAri,re3$pStd),cor(re3$pAri,re3$pGeo))"
+"0","k4 = cbind(cor(re4$pAri,re4$ST),cor(re4$pAri,re4$pStd),cor(re4$pAri,re4$pGeo))"
+"0","k5 = cbind(cor(re5$pAri,re5$ST),cor(re5$pAri,re5$pStd),cor(re5$pAri,re5$pGeo))"
+"0","re = data.frame(K=c(1.1, 1.2 ,1.3 ,1.4 ,1.5), rbind(k1,k2,k3,k4,k5))"
+"0","colnames(re) = c(""K"", 'cor(P(A),S(T))','cor(P(A),P(E))','cor(P(A),P(G))')"
+"0","library(pander)"
+"0","pander(re)"
+"1","
+--------------------------------------------------------
+  K    cor(P(A),S(T))   cor(P(A),P(E))   cor(P(A),P(G)) 
+----- ---------------- ---------------- ----------------
+ 1.1       0.8016           0.8477           0.9968     
+
+ 1.2       0.7626           0.8403           0.9966     
+
+ 1.3       0.7244           0.8352           0.9952     
+
+ 1.4       0.689            0.8278           0.9922     
+
+ 1.5       0.6046           0.7812           0.9915     
+--------------------------------------------------------
+
+"
